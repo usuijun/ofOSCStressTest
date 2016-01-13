@@ -4,6 +4,8 @@
 void ofApp::setup(){
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
+    oscSender_.setup(LOCALHOST, PORT);
+    oscReceiver_.setup(PORT);
 }
 
 //--------------------------------------------------------------
@@ -31,13 +33,32 @@ void ofApp::draw(){
     std::stringstream maxs;
     maxs << "max: " << max_;
     
-    ofDrawBitmapString(ss.str().c_str(), 10, 10);
-    ofDrawBitmapString(mins.str().c_str(), 10, 25);
-    ofDrawBitmapString(maxs.str().c_str(), 10, 40);
-    ofDrawBitmapString("press 'c' to clear min and max", 10, 55);
+    std::stringstream countss;
+    countss << "OSC count: " << count_;
     
+    int ypos = 10;
+    int gap = 15;
+    ofDrawBitmapString(ss.str().c_str(), 10, ypos);
+    
+    ypos += gap;
+    ofDrawBitmapString(mins.str().c_str(), 10, ypos);
+    
+    ypos += gap;
+    ofDrawBitmapString(maxs.str().c_str(), 10, ypos);
 
+    ypos += gap;
+    ofDrawBitmapString(countss.str().c_str(), 10, ypos);
+    
+    ypos += gap;
+    ofDrawBitmapString("press 'c' to clear min, max and count", 10, ypos);
+
+    ypos += gap;
+    ofDrawBitmapString("mouse click to send test OSC", 10, ypos);
+
+    ofDrawCircle(ofGetWidth()/2, ofGetHeight()/2, size_);
     ofPopMatrix();
+    
+    size_ = ofClamp(size_-0.5, 0, 100);
 }
 
 //--------------------------------------------------------------
@@ -46,6 +67,7 @@ void ofApp::keyPressed(int key){
         case 'c':
             min_ = 60;
             max_ = 0;
+            count_ = 0;
             break;
             
         default:
@@ -70,7 +92,9 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+    ofxOscMessage m;
+    m.setAddress("/hello");
+    oscSender_.sendMessage(m);
 }
 
 //--------------------------------------------------------------
@@ -107,6 +131,8 @@ void ofApp::parseOSC() {
     while (oscReceiver_.hasWaitingMessages()) {
         ofxOscMessage m;
         oscReceiver_.getNextMessage(m);
+        size_ += 5;
+        ++count_;
     }
     
 }

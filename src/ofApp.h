@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxOSC.h"
 
+#define LOCALHOST "localhost"
 #define PORT 24080
 
 class ofApp : public ofBaseApp{
@@ -26,6 +27,10 @@ class ofApp : public ofBaseApp{
 
     void parseOSC();
     ofxOscReceiver oscReceiver_;
+    ofxOscSender oscSender_;
     float min_ = 60;
     float max_ = 0;
+    uint64_t count_ = 0;
+    
+    float size_ = 0;
 };
