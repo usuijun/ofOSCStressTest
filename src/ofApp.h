@@ -1,6 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxOSC.h"
+
+#define PORT 24080
 
 class ofApp : public ofBaseApp{
 
@@ -20,5 +23,9 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
+
+    void parseOSC();
+    ofxOscReceiver oscReceiver_;
+    float min_ = 60;
+    float max_ = 0;
 };
